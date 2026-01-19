@@ -90,6 +90,12 @@ export function useChatPanels() {
     updatePanel(panelId, { messages: [] })
   }, [updatePanel])
 
+  const clearAllMessages = useCallback(() => {
+    setPanels((prev) =>
+      prev.map((p) => ({ ...p, messages: [] }))
+    )
+  }, [])
+
   const movePanel = useCallback((panelId: string, direction: 'left' | 'right') => {
     setPanels((prev) => {
       const index = prev.findIndex((p) => p.id === panelId)
@@ -375,6 +381,7 @@ export function useChatPanels() {
     setModel,
     setConfig,
     clearMessages,
+    clearAllMessages,
     movePanel,
     sendMessage,
     sendToAllPanels,

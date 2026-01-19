@@ -4,7 +4,18 @@ import { ChatPanel } from '@/components/chat-panel'
 import { SyncInput } from '@/components/sync-input'
 import { APIConfigDialog } from '@/components/api-config-dialog'
 import { Button } from '@/components/ui/button'
-import { Link, LinkBreak, DotsSix, Plus } from '@phosphor-icons/react'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog'
+import { Link, LinkBreak, DotsSix, Plus, Eraser } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 
 function App() {
@@ -63,6 +74,7 @@ function App() {
     setModel,
     setConfig,
     clearMessages,
+    clearAllMessages,
     movePanel,
     sendMessage,
     sendToAllPanels,
@@ -104,6 +116,25 @@ function App() {
           >
             {isSyncMode ? <Link className="h-4 w-4" weight="bold" /> : <LinkBreak className="h-4 w-4" weight="bold" />}
           </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button variant="outline" size="icon" className="h-8 w-8">
+                <Eraser className="h-4 w-4" weight="bold" />
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Clear all chats?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will clear all chat messages from all panels. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={clearAllMessages}>Clear all</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <APIConfigDialog />
         </div>
       </div>
