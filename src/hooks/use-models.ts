@@ -7,6 +7,16 @@ interface OpenAIModel {
   object: string
   created: number
   owned_by: string
+  name?: string
+  description?: string
+  context_window?: number
+  max_tokens?: number
+  type?: string
+  tags?: string[]
+  pricing?: {
+    input?: string
+    output?: string
+  }
 }
 
 interface ModelsResponse {
@@ -46,12 +56,12 @@ export function useModels() {
         
         const llmModels: LLMModel[] = data.data.map((model) => ({
           id: model.id,
-          name: model.id,
+          name: model.name || model.id,
           provider: model.owned_by || 'Unknown',
-          description: `Model: ${model.id}`,
-          contextWindow: 0,
-          inputPricing: 0,
-          outputPricing: 0,
+          description: model.description || `Model: ${model.id}`,
+          contextWindow: model.context_window || 0,
+          inputPricing: model.pricing?.input ? parseFloat(model.pricing.input) : 0,
+          outputPricing: model.pricing?.output ? parseFloat(model.pricing.output) : 0,
           icon: getModelIcon(model.owned_by),
         }))
 
@@ -87,18 +97,51 @@ export function useModels() {
   return { models, isLoading, error, refetch }
 }
 
+const ICON_CDN_BASE = 'https://registry.npmmirror.com/@lobehub/icons-static-svg/latest/files/icons'
+
+const PROVIDER_ICON_MAP: Record<string, string> = {
+  alibaba: 'alibaba-color',
+  amazon: 'aws-color',
+  aws: 'aws-color',
+  anthropic: 'anthropic',
+  'arcee-ai': 'arcee-color',
+  arcee: 'arcee-color',
+  bfl: 'bfl',
+  bytedance: 'bytedance-color',
+  cerebras: 'cerebras-color',
+  cohere: 'cohere-color',
+  deepseek: 'deepseek-color',
+  google: 'google-color',
+  groq: 'groq',
+  inception: 'inception',
+  kwaipilot: 'kwaipilot-color',
+  meta: 'meta-color',
+  llama: 'meta-color',
+  minimax: 'minimax-color',
+  mistral: 'mistral-color',
+  moonshot: 'moonshot',
+  moonshotai: 'moonshot',
+  morph: 'morph-color',
+  nvidia: 'nvidia-color',
+  openai: 'openai',
+  perplexity: 'perplexity-color',
+  recraft: 'recraft',
+  together: 'together-color',
+  vercel: 'vercel',
+  voyage: 'voyage-color',
+  xai: 'xai',
+  xiaomi: 'xiaomimimo',
+  zai: 'zai',
+}
+
 function getModelIcon(owner: string): string {
   const ownerLower = owner?.toLowerCase() || ''
   
-  if (ownerLower.includes('openai')) return '💚'
-  if (ownerLower.includes('anthropic')) return '🎭'
-  if (ownerLower.includes('google')) return '💎'
-  if (ownerLower.includes('meta') || ownerLower.includes('llama')) return '🦙'
-  if (ownerLower.includes('mistral')) return '🌬️'
-  if (ownerLower.includes('cerebras')) return '🧠'
-  if (ownerLower.includes('groq')) return '⚡'
-  if (ownerLower.includes('together')) return '🤝'
-  if (ownerLower.includes('deepseek')) return '🔍'
+  for (const [key, iconName] of Object.entries(PROVIDER_ICON_MAP)) {
+    if (ownerLower.includes(key)) {
+      return `${ICON_CDN_BASE}/${iconName}.svg`
+    }
+  }
   
-  return '🤖'
+  return `${ICON_CDN_BASE}/openai.svg`
 }

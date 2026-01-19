@@ -47,7 +47,7 @@ export function ModelSelector({ value, onValueChange }: ModelSelectorProps) {
           <div className="flex items-center gap-2 truncate">
             {value ? (
               <>
-                <span className="text-base">{value.icon}</span>
+                <img src={value.icon} alt={value.provider} className="h-4 w-4" />
                 <span className="truncate">{value.name}</span>
               </>
             ) : (
@@ -94,7 +94,7 @@ export function ModelSelector({ value, onValueChange }: ModelSelectorProps) {
                     }}
                     className="flex items-center gap-2"
                   >
-                    <span className="text-base">{model.icon}</span>
+                    <img src={model.icon} alt={model.provider} className="h-4 w-4" />
                     <span className="flex-1 truncate">{model.name}</span>
                     <Check
                       className={cn(
