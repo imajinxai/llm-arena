@@ -145,13 +145,17 @@ const COMPONENTS = {
   ol: withClass("ol", "list-decimal space-y-2 pl-6"),
   ul: withClass("ul", "list-disc space-y-2 pl-6"),
   li: withClass("li", "my-1.5"),
-  table: withClass(
-    "table",
-    "w-full border-collapse overflow-y-auto rounded-md border border-foreground/20"
+  table: ({ node, ...props }: any) => (
+    <div className="overflow-x-auto mb-4">
+      <table
+        className="w-full border-collapse rounded-md border border-foreground/20"
+        {...props}
+      />
+    </div>
   ),
   th: withClass(
     "th",
-    "border border-foreground/20 px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right"
+    "border border-foreground/20 px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right whitespace-nowrap"
   ),
   td: withClass(
     "td",
