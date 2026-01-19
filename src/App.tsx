@@ -15,8 +15,9 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import { Link, LinkBreak, DotsSix, Plus, Eraser } from '@phosphor-icons/react'
+import { Link, LinkBreak, DotsSix, Plus, Eraser, Sun, Moon } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
+import { useTheme } from '@/stores/theme'
 
 function App() {
   const [isSyncMode, setIsSyncMode] = useState(false)
@@ -84,6 +85,7 @@ function App() {
 
   const isAnyGenerating = panels.some((p) => p.isGenerating)
   const panelsWithModels = panels.filter((p) => p.model !== null).length
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <div className="h-screen w-screen flex flex-col overflow-hidden bg-background">
@@ -135,6 +137,14 @@ function App() {
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={toggleTheme}
+            className="h-8 w-8"
+          >
+            {theme === 'dark' ? <Sun className="h-4 w-4" weight="bold" /> : <Moon className="h-4 w-4" weight="bold" />}
+          </Button>
           <APIConfigDialog />
         </div>
       </div>
