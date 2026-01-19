@@ -50,7 +50,6 @@ export function useChatPanels() {
       config: { ...defaultModelConfig },
       messages: [],
       isGenerating: false,
-      input: '',
     }
   }
 
@@ -83,10 +82,6 @@ export function useChatPanels() {
 
   const setConfig = useCallback((panelId: string, config: ModelConfig) => {
     updatePanel(panelId, { config })
-  }, [updatePanel])
-
-  const setInput = useCallback((panelId: string, input: string) => {
-    updatePanel(panelId, { input })
   }, [updatePanel])
 
   const clearMessages = useCallback((panelId: string) => {
@@ -127,7 +122,6 @@ export function useChatPanels() {
 
     updatePanel(panelId, {
       messages: updatedMessages,
-      input: '',
       isGenerating: true,
     })
 
@@ -358,7 +352,6 @@ export function useChatPanels() {
     updatePanel,
     setModel,
     setConfig,
-    setInput,
     clearMessages,
     movePanel,
     sendMessage,

@@ -38,7 +38,6 @@ export interface ChatPanel {
   config: ModelConfig
   messages: ChatMessage[]
   isGenerating: boolean
-  input: string
 }
 
 export const defaultModelConfig: ModelConfig = {

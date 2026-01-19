@@ -161,11 +161,12 @@ export function MessageInput({
   const textAreaRef = useRef<HTMLTextAreaElement>(null)
   const [textAreaHeight, setTextAreaHeight] = useState<number>(0)
 
+  // Only measure height when recording overlay is actually needed
   useEffect(() => {
-    if (textAreaRef.current) {
-      setTextAreaHeight(textAreaRef.current.offsetHeight)
-    }
-  }, [props.value])
+    if (!isRecording && !isTranscribing) return
+    if (!textAreaRef.current) return
+    setTextAreaHeight(textAreaRef.current.offsetHeight)
+  }, [isRecording, isTranscribing])
 
   const showFileList =
     props.allowAttachments && props.files && props.files.length > 0

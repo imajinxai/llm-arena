@@ -1,4 +1,4 @@
-import { useCallback, useMemo, type ChangeEvent } from 'react'
+import React, { useCallback, useMemo, useState, type ChangeEvent } from 'react'
 import { ChatContainer, ChatMessages, ChatForm } from '@/components/ui/chat'
 import { MessageInput } from '@/components/ui/message-input'
 import { MessageList } from '@/components/ui/message-list'
@@ -16,7 +16,6 @@ interface ChatPanelProps {
   isSyncMode: boolean
   onModelChange: (model: LLMModel) => void
   onConfigChange: (config: ModelConfig) => void
-  onInputChange: (input: string) => void
   onSendMessage: (content: string) => void
   onStopGeneration: () => void
   onClearChat: () => void
@@ -35,6 +34,58 @@ function convertToMessages(messages: ChatMessage[], isGenerating: boolean): Mess
   }))
 }
 
+interface ChatComposerProps {
+  model: LLMModel | null
+  isGenerating: boolean
+  onSendMessage: (content: string) => void
+  onStopGeneration: () => void
+}
+
+const ChatComposer = React.memo(function ChatComposer({
+  model,
+  isGenerating,
+  onSendMessage,
+  onStopGeneration,
+}: ChatComposerProps) {
+  const [input, setInput] = useState('')
+
+  const handleInputChange = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
+    setInput(e.target.value)
+  }, [])
+
+  const handleSubmit = useCallback(
+    (event?: { preventDefault?: () => void }) => {
+      event?.preventDefault?.()
+      if (input.trim() && model) {
+        onSendMessage(input.trim())
+        setInput('')
+      }
+    },
+    [input, model, onSendMessage]
+  )
+
+  return (
+    <ChatForm
+      className="mt-auto p-4 bg-muted/50 rounded-b-lg"
+      isPending={isGenerating}
+      handleSubmit={handleSubmit}
+    >
+      {({ files, setFiles }) => (
+        <MessageInput
+          value={input}
+          onChange={handleInputChange}
+          allowAttachments
+          files={files}
+          setFiles={setFiles}
+          stop={onStopGeneration}
+          isGenerating={isGenerating}
+          placeholder={model ? `Message ${model.name}...` : 'Select a model first...'}
+        />
+      )}
+    </ChatForm>
+  )
+})
+
 export function ChatPanel({
   panel,
   index,
@@ -42,7 +93,6 @@ export function ChatPanel({
   isSyncMode,
   onModelChange,
   onConfigChange,
-  onInputChange,
   onSendMessage,
   onStopGeneration,
   onClearChat,
@@ -56,23 +106,6 @@ export function ChatPanel({
   )
   const lastMessage = messages.at(-1)
   const isTyping = lastMessage?.role === 'user'
-
-  const handleInputChange = useCallback(
-    (e: ChangeEvent<HTMLTextAreaElement>) => {
-      onInputChange(e.target.value)
-    },
-    [onInputChange]
-  )
-
-  const handleSubmit = useCallback(
-    (event?: { preventDefault?: () => void }) => {
-      event?.preventDefault?.()
-      if (panel.input.trim() && panel.model) {
-        onSendMessage(panel.input.trim())
-      }
-    },
-    [panel.input, panel.model, onSendMessage]
-  )
 
   const messageOptions = useCallback(
     (message: Message) => ({
@@ -116,24 +149,12 @@ export function ChatPanel({
         )}
 
         {!isSyncMode && (
-          <ChatForm
-            className="mt-auto p-4 bg-muted/50 rounded-b-lg"
-            isPending={panel.isGenerating || isTyping}
-            handleSubmit={handleSubmit}
-          >
-            {({ files, setFiles }) => (
-              <MessageInput
-                value={panel.input}
-                onChange={handleInputChange}
-                allowAttachments
-                files={files}
-                setFiles={setFiles}
-                stop={onStopGeneration}
-                isGenerating={panel.isGenerating}
-                placeholder={panel.model ? `Message ${panel.model.name}...` : 'Select a model first...'}
-              />
-            )}
-          </ChatForm>
+          <ChatComposer
+            model={panel.model}
+            isGenerating={panel.isGenerating}
+            onSendMessage={onSendMessage}
+            onStopGeneration={onStopGeneration}
+          />
         )}
       </ChatContainer>
     </div>

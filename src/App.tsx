@@ -62,7 +62,6 @@ function App() {
     removePanel,
     setModel,
     setConfig,
-    setInput,
     clearMessages,
     movePanel,
     sendMessage,
@@ -125,7 +124,6 @@ function App() {
               isSyncMode={isSyncMode}
               onModelChange={(model) => setModel(panel.id, model)}
               onConfigChange={(config) => setConfig(panel.id, config)}
-              onInputChange={(input) => setInput(panel.id, input)}
               onSendMessage={(content) => sendMessage(panel.id, content)}
               onStopGeneration={() => stopGeneration(panel.id)}
               onClearChat={() => clearMessages(panel.id)}

@@ -14,26 +14,36 @@ export function useAutosizeTextArea({
   dependencies,
 }: UseAutosizeTextAreaProps) {
   const originalHeight = useRef<number | null>(null)
+  const lastValueLength = useRef<number>(0)
+  const isMaxed = useRef<boolean>(false)
 
   useLayoutEffect(() => {
-    if (!ref.current) return
+    const el = ref.current
+    if (!el) return
 
-    const currentRef = ref.current
+    const value = el.value ?? ""
+    const growing = value.length > lastValueLength.current
+    lastValueLength.current = value.length
+
+    // If already maxed and still growing, skip expensive measurement
+    if (isMaxed.current && growing) return
+
     const borderAdjustment = borderWidth * 2
 
     if (originalHeight.current === null) {
-      originalHeight.current = currentRef.scrollHeight - borderAdjustment
+      originalHeight.current = el.scrollHeight - borderAdjustment
     }
 
-    currentRef.style.removeProperty("height")
-    const scrollHeight = currentRef.scrollHeight
+    // Use height:auto rather than removeProperty (less janky)
+    el.style.height = "auto"
 
-    // Make sure we don't go over maxHeight
+    const scrollHeight = el.scrollHeight
     const clampedToMax = Math.min(scrollHeight, maxHeight)
-    // Make sure we don't go less than the original height
     const clampedToMin = Math.max(clampedToMax, originalHeight.current)
 
-    currentRef.style.height = `${clampedToMin + borderAdjustment}px`
+    el.style.height = `${clampedToMin + borderAdjustment}px`
+
+    isMaxed.current = clampedToMax >= maxHeight
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [maxHeight, ref, ...dependencies])
 }

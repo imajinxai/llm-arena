@@ -1,3 +1,4 @@
+import React from "react"
 import {
   ChatMessage,
   type ChatMessageProps,
@@ -16,7 +17,7 @@ interface MessageListProps {
     | ((message: Message) => AdditionalMessageOptions)
 }
 
-export function MessageList({
+export const MessageList = React.memo(function MessageList({
   messages,
   showTimeStamps = true,
   isTyping = false,
@@ -24,7 +25,7 @@ export function MessageList({
 }: MessageListProps) {
   return (
     <div className="space-y-4 overflow-visible">
-      {messages.map((message, index) => {
+      {messages.map((message) => {
         const additionalOptions =
           typeof messageOptions === "function"
             ? messageOptions(message)
@@ -32,7 +33,7 @@ export function MessageList({
 
         return (
           <ChatMessage
-            key={index}
+            key={message.id}
             showTimeStamp={showTimeStamps}
             {...message}
             {...additionalOptions}
@@ -42,4 +43,4 @@ export function MessageList({
       {isTyping && <TypingIndicator />}
     </div>
   )
-}
+})
