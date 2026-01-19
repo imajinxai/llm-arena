@@ -50,10 +50,6 @@ export function SyncInput({
   return (
     <div className="border-t bg-muted/30 p-3">
       <form onSubmit={handleSubmit} className="flex items-end gap-2">
-        <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Link2 className="h-3.5 w-3.5" />
-          <span>Sync</span>
-        </div>
         <div className="relative flex-1">
           <textarea
             value={input}
