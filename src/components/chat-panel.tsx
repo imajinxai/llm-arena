@@ -8,7 +8,6 @@ import { CopyButton } from '@/components/ui/copy-button'
 import { ModelSelector } from '@/components/model-selector'
 import { ModelConfigPopover } from '@/components/model-config-popover'
 import { PanelActionsMenu } from '@/components/panel-actions-menu'
-import { ModelInfoCard } from '@/components/model-info-card'
 import type { ChatPanel as ChatPanelType, LLMModel, ModelConfig, ChatMessage } from '@/types'
 import type { Message } from '@/components/ui/chat-message'
 
@@ -106,14 +105,6 @@ export function ChatPanel({
       </div>
 
       <ChatContainer className="flex-1 min-h-0">
-        {isEmpty && panel.model && <ModelInfoCard model={panel.model} />}
-        
-        {!isEmpty && panel.model && (
-          <div className="px-4 pt-4">
-            <ModelInfoCard model={panel.model} />
-          </div>
-        )}
-
         {messages.length > 0 && (
           <ChatMessages messages={messages}>
             <MessageList
