@@ -294,7 +294,7 @@ const ReasoningBlock = ({ part }: { part: ReasoningPart }) => {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="mb-2 flex flex-col items-start sm:max-w-[70%]">
+    <div className="mb-2 flex flex-col items-start w-full">
       <Collapsible
         open={isOpen}
         onOpenChange={setIsOpen}
@@ -312,10 +312,8 @@ const ReasoningBlock = ({ part }: { part: ReasoningPart }) => {
           </CollapsibleTrigger>
         </div>
         <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
-          <div className="border-t p-2">
-            <div className="whitespace-pre-wrap text-xs">
-              {part.reasoning}
-            </div>
+          <div className="border-t p-3 text-sm">
+            <MarkdownRenderer>{part.reasoning}</MarkdownRenderer>
           </div>
         </CollapsibleContent>
       </Collapsible>
