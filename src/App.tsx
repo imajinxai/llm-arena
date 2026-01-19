@@ -99,12 +99,17 @@ function App() {
         </Button>
         <APIConfigDialog />
       </div>
-      <div className="flex-1 flex overflow-x-auto p-2 gap-2">
+      <div className={cn(
+        "flex-1 flex p-2 gap-2",
+        panels.length > 3 ? "overflow-x-auto" : "overflow-hidden"
+      )}>
         {panels.map((panel, index) => (
           <div
             key={panel.id}
-            className="flex-shrink-0 min-w-[360px] h-full"
-            style={{ width: panels.length <= 3 ? `${100 / panels.length}%` : '400px' }}
+            className={cn(
+              "h-full",
+              panels.length <= 3 ? "flex-1 min-w-0" : "flex-shrink-0 w-[400px]"
+            )}
           >
             <ChatPanel
               panel={panel}
