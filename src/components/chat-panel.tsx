@@ -106,15 +106,15 @@ export function ChatPanel({
 
       <ChatContainer className="flex-1 min-h-0">
         {messages.length > 0 && (
-          <div className="p-2">
-            <ChatMessages messages={messages}>
+          <ChatMessages messages={messages}>
+            <div className="p-2">
               <MessageList
                 messages={messages}
                 isTyping={isTyping}
                 messageOptions={messageOptions}
               />
-            </ChatMessages>
-          </div>
+            </div>
+          </ChatMessages>
         )}
 
         <ChatForm
