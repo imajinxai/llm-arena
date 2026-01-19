@@ -86,8 +86,8 @@ export function ChatPanel({
   )
 
   return (
-    <div className="flex flex-col h-full border-r last:border-r-0">
-      <div className="flex items-center gap-1 p-2 border-b">
+    <div className="flex flex-col h-full border rounded-lg bg-card">
+      <div className="flex items-center gap-1 p-2 border-b bg-muted/50 rounded-t-lg">
         <ModelSelector value={panel.model} onValueChange={onModelChange} />
         <ModelConfigPopover config={panel.config} onConfigChange={onConfigChange} />
         <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onAddPanel}>
@@ -106,17 +106,19 @@ export function ChatPanel({
 
       <ChatContainer className="flex-1 min-h-0">
         {messages.length > 0 && (
-          <ChatMessages messages={messages}>
-            <MessageList
-              messages={messages}
-              isTyping={isTyping}
-              messageOptions={messageOptions}
-            />
-          </ChatMessages>
+          <div className="p-2">
+            <ChatMessages messages={messages}>
+              <MessageList
+                messages={messages}
+                isTyping={isTyping}
+                messageOptions={messageOptions}
+              />
+            </ChatMessages>
+          </div>
         )}
 
         <ChatForm
-          className="mt-auto p-4"
+          className="mt-auto p-4 bg-muted/50 rounded-b-lg"
           isPending={panel.isGenerating || isTyping}
           handleSubmit={handleSubmit}
         >

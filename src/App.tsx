@@ -17,7 +17,7 @@ function App() {
   } = useChatPanels()
 
   return (
-    <div className="h-screen w-screen flex overflow-hidden bg-background">
+    <div className="h-screen w-screen flex overflow-hidden bg-background p-2 gap-2">
       <APIConfigDialog />
       {panels.map((panel, index) => (
         <div
