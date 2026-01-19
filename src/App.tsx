@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 
 function App() {
   const [isSyncMode, setIsSyncMode] = useState(false)
-  const [position, setPosition] = useState({ x: window.innerWidth - 60, y: 16 })
+  const [position, setPosition] = useState({ x: window.innerWidth - 60, y: window.innerHeight / 2 - 60 })
   const [isDragging, setIsDragging] = useState(false)
   const dragRef = useRef<HTMLDivElement>(null)
   const dragStartRef = useRef({ x: 0, y: 0, posX: 0, posY: 0 })
