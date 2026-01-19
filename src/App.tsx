@@ -4,7 +4,7 @@ import { ChatPanel } from '@/components/chat-panel'
 import { SyncInput } from '@/components/sync-input'
 import { APIConfigDialog } from '@/components/api-config-dialog'
 import { Button } from '@/components/ui/button'
-import { Link2, Link2Off, GripVertical } from 'lucide-react'
+import { Link2, Link2Off, GripVertical, Plus } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 function App() {
@@ -84,6 +84,14 @@ function App() {
         <Button
           variant="outline"
           size="icon"
+          onClick={addPanel}
+          className="h-8 w-8"
+        >
+          <Plus className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="outline"
+          size="icon"
           onClick={() => setIsSyncMode(!isSyncMode)}
           className={cn('h-8 w-8', isSyncMode && 'bg-primary text-primary-foreground hover:bg-primary/90')}
         >
@@ -112,7 +120,6 @@ function App() {
               onMoveLeft={() => movePanel(panel.id, 'left')}
               onMoveRight={() => movePanel(panel.id, 'right')}
               onDelete={() => removePanel(panel.id)}
-              onAddPanel={addPanel}
             />
           </div>
         ))}

@@ -1,6 +1,4 @@
 import { useCallback, type ChangeEvent } from 'react'
-import { Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { ChatContainer, ChatMessages, ChatForm } from '@/components/ui/chat'
 import { MessageInput } from '@/components/ui/message-input'
 import { MessageList } from '@/components/ui/message-list'
@@ -25,7 +23,6 @@ interface ChatPanelProps {
   onMoveLeft: () => void
   onMoveRight: () => void
   onDelete: () => void
-  onAddPanel: () => void
 }
 
 function convertToMessages(messages: ChatMessage[]): Message[] {
@@ -51,7 +48,6 @@ export function ChatPanel({
   onMoveLeft,
   onMoveRight,
   onDelete,
-  onAddPanel,
 }: ChatPanelProps) {
   const messages = convertToMessages(panel.messages)
   const isEmpty = messages.length === 0
@@ -92,9 +88,6 @@ export function ChatPanel({
       <div className="flex items-center gap-1 p-2 border-b bg-muted/50 rounded-t-lg">
         <ModelSelector value={panel.model} onValueChange={onModelChange} />
         <ModelConfigPopover config={panel.config} onConfigChange={onConfigChange} />
-        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onAddPanel}>
-          <Plus className="h-4 w-4" />
-        </Button>
         <PanelActionsMenu
           onClearChat={onClearChat}
           onMoveLeft={onMoveLeft}
