@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Check, ChevronDown, Search } from 'lucide-react'
+import { Check, ChevronDown, Search, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
@@ -14,7 +14,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command'
-import { models } from '@/data/models'
+import { useModels } from '@/hooks/use-models'
 import type { LLMModel } from '@/types'
 import { cn } from '@/lib/utils'
 
@@ -25,6 +25,7 @@ interface ModelSelectorProps {
 
 export function ModelSelector({ value, onValueChange }: ModelSelectorProps) {
   const [open, setOpen] = useState(false)
+  const { models, isLoading, error } = useModels()
 
   const groupedModels = models.reduce((acc, model) => {
     if (!acc[model.provider]) {
@@ -63,7 +64,24 @@ export function ModelSelector({ value, onValueChange }: ModelSelectorProps) {
         <Command>
           <CommandInput placeholder="Search models..." />
           <CommandList>
-            <CommandEmpty>No model found.</CommandEmpty>
+            {isLoading && (
+              <div className="flex items-center justify-center py-6 text-sm text-muted-foreground">
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Loading models...
+              </div>
+            )}
+            {error && (
+              <div className="py-6 text-center text-sm text-muted-foreground">
+                <p className="text-destructive">{error}</p>
+                <p className="mt-1">Check your API settings</p>
+              </div>
+            )}
+            {!isLoading && !error && models.length === 0 && (
+              <CommandEmpty>
+                <p>No models found.</p>
+                <p className="text-xs mt-1">Configure API key in settings</p>
+              </CommandEmpty>
+            )}
             {Object.entries(groupedModels).map(([provider, providerModels]) => (
               <CommandGroup key={provider} heading={provider}>
                 {providerModels.map((model) => (

@@ -3,12 +3,11 @@ import { nanoid } from 'nanoid'
 import OpenAI from 'openai'
 import type { ChatPanel, ChatMessage, LLMModel, ModelConfig } from '@/types'
 import { defaultModelConfig } from '@/types'
-import { models } from '@/data/models'
 import { useAPIConfig } from '@/stores/api-config'
 
 export function useChatPanels() {
   const [panels, setPanels] = useState<ChatPanel[]>(() => [
-    createPanel(models[0]),
+    createPanel(),
   ])
   const { config: apiConfig } = useAPIConfig()
 
