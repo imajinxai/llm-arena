@@ -33,7 +33,7 @@ export function APIConfigDialog() {
   return (
     <Dialog open={open} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" className="fixed top-4 right-4 z-50">
+        <Button variant="outline" size="icon">
           <Settings className="h-4 w-4" />
         </Button>
       </DialogTrigger>

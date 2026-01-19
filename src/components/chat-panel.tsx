@@ -15,6 +15,7 @@ interface ChatPanelProps {
   panel: ChatPanelType
   index: number
   totalPanels: number
+  isSyncMode: boolean
   onModelChange: (model: LLMModel) => void
   onConfigChange: (config: ModelConfig) => void
   onInputChange: (input: string) => void
@@ -40,6 +41,7 @@ export function ChatPanel({
   panel,
   index,
   totalPanels,
+  isSyncMode,
   onModelChange,
   onConfigChange,
   onInputChange,
@@ -117,24 +119,26 @@ export function ChatPanel({
           </ChatMessages>
         )}
 
-        <ChatForm
-          className="mt-auto p-4 bg-muted/50 rounded-b-lg"
-          isPending={panel.isGenerating || isTyping}
-          handleSubmit={handleSubmit}
-        >
-          {({ files, setFiles }) => (
-            <MessageInput
-              value={panel.input}
-              onChange={handleInputChange}
-              allowAttachments
-              files={files}
-              setFiles={setFiles}
-              stop={onStopGeneration}
-              isGenerating={panel.isGenerating}
-              placeholder={panel.model ? `Message ${panel.model.name}...` : 'Select a model first...'}
-            />
-          )}
-        </ChatForm>
+        {!isSyncMode && (
+          <ChatForm
+            className="mt-auto p-4 bg-muted/50 rounded-b-lg"
+            isPending={panel.isGenerating || isTyping}
+            handleSubmit={handleSubmit}
+          >
+            {({ files, setFiles }) => (
+              <MessageInput
+                value={panel.input}
+                onChange={handleInputChange}
+                allowAttachments
+                files={files}
+                setFiles={setFiles}
+                stop={onStopGeneration}
+                isGenerating={panel.isGenerating}
+                placeholder={panel.model ? `Message ${panel.model.name}...` : 'Select a model first...'}
+              />
+            )}
+          </ChatForm>
+        )}
       </ChatContainer>
     </div>
   )
