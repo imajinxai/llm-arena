@@ -122,18 +122,20 @@ export function ChatPanel({
 
   return (
     <div className="flex flex-col h-full border rounded-lg bg-card">
-      <div className="flex items-center gap-1 p-2 border-b bg-muted/50 rounded-t-lg">
+      <div className="flex items-center justify-between p-2 border-b bg-muted/50 rounded-t-lg">
         <ModelSelector value={panel.model} onValueChange={onModelChange} />
-        <ModelConfigPopover config={panel.config} onConfigChange={onConfigChange} />
-        <PanelActionsMenu
-          onClearChat={onClearChat}
-          onMoveLeft={onMoveLeft}
-          onMoveRight={onMoveRight}
-          onDelete={onDelete}
-          canMoveLeft={index > 0}
-          canMoveRight={index < totalPanels - 1}
-          canDelete={totalPanels > 1}
-        />
+        <div className="flex items-center gap-1">
+          <ModelConfigPopover config={panel.config} onConfigChange={onConfigChange} />
+          <PanelActionsMenu
+            onClearChat={onClearChat}
+            onMoveLeft={onMoveLeft}
+            onMoveRight={onMoveRight}
+            onDelete={onDelete}
+            canMoveLeft={index > 0}
+            canMoveRight={index < totalPanels - 1}
+            canDelete={totalPanels > 1}
+          />
+        </div>
       </div>
 
       <ChatContainer className="flex-1 min-h-0">

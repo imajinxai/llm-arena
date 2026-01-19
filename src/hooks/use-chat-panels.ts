@@ -28,6 +28,8 @@ const THROTTLE_MS = 50
 export function useChatPanels() {
   const [panels, setPanels] = useState<ChatPanel[]>(() => [
     createPanel(),
+    createPanel(),
+    createPanel(),
   ])
   const { config: apiConfig } = useAPIConfig()
   const abortControllersRef = useRef<Map<string, AbortController>>(new Map())

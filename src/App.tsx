@@ -150,14 +150,16 @@ function App() {
       </div>
       <div className={cn(
         "flex-1 flex p-2 gap-2",
-        panels.length > 3 ? "overflow-x-auto" : "overflow-hidden"
+        panels.length > 1 ? "overflow-x-auto md:overflow-hidden" : "overflow-hidden",
+        panels.length > 3 && "md:overflow-x-auto"
       )}>
         {panels.map((panel, index) => (
           <div
             key={panel.id}
             className={cn(
               "h-full",
-              panels.length <= 3 ? "flex-1 min-w-0" : "flex-shrink-0 w-[400px]"
+              panels.length > 1 ? "flex-shrink-0 w-[85vw] md:w-auto md:flex-shrink md:flex-1 md:min-w-0" : "flex-1 min-w-0",
+              panels.length > 3 && "md:flex-shrink-0 md:w-[400px] md:flex-auto"
             )}
           >
             <ChatPanel
