@@ -1,9 +1,28 @@
 import { useState, useCallback } from 'react'
 import { nanoid } from 'nanoid'
-import OpenAI from 'openai'
 import type { ChatPanel, ChatMessage, LLMModel, ModelConfig } from '@/types'
 import { defaultModelConfig } from '@/types'
 import { useAPIConfig } from '@/stores/api-config'
+
+interface ChatCompletionResponse {
+  id: string
+  object: string
+  created: number
+  model: string
+  choices: {
+    index: number
+    message: {
+      role: string
+      content: string
+    }
+    finish_reason: string
+  }[]
+  usage?: {
+    prompt_tokens: number
+    completion_tokens: number
+    total_tokens: number
+  }
+}
 
 export function useChatPanels() {
   const [panels, setPanels] = useState<ChatPanel[]>(() => [
@@ -89,7 +108,6 @@ export function useChatPanels() {
       isGenerating: true,
     })
 
-    // Check if API is configured
     if (!apiConfig.apiKey) {
       const errorMessage: ChatMessage = {
         id: nanoid(),
@@ -113,27 +131,35 @@ export function useChatPanels() {
     }
 
     try {
-      const openai = new OpenAI({
-        apiKey: apiConfig.apiKey,
-        baseURL: apiConfig.baseUrl,
-        dangerouslyAllowBrowser: true,
+      const response = await fetch(`${apiConfig.baseUrl}/chat/completions`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiConfig.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: panel.model.id,
+          messages: updatedMessages.map((msg) => ({
+            role: msg.role,
+            content: msg.content,
+          })),
+          max_tokens: panel.config.maxOutputTokens,
+          temperature: panel.config.temperature,
+          top_p: panel.config.topP,
+        }),
       })
 
-      const completion = await openai.chat.completions.create({
-        model: panel.model.id,
-        messages: updatedMessages.map((msg) => ({
-          role: msg.role,
-          content: msg.content,
-        })),
-        max_tokens: panel.config.maxOutputTokens,
-        temperature: panel.config.temperature,
-        top_p: panel.config.topP,
-      })
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      const data: ChatCompletionResponse = await response.json()
 
       const assistantMessage: ChatMessage = {
         id: nanoid(),
         role: 'assistant',
-        content: completion.choices[0]?.message?.content || 'No response received.',
+        content: data.choices[0]?.message?.content || 'No response received.',
         createdAt: new Date(),
       }
 
