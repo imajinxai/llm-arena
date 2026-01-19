@@ -3,6 +3,7 @@
 import {
   forwardRef,
   useCallback,
+  useEffect,
   useRef,
   useState,
   type ReactElement,
@@ -68,7 +69,10 @@ export function Chat({
   const isTyping = lastMessage?.role === "user"
 
   const messagesRef = useRef(messages)
-  messagesRef.current = messages
+  
+  useEffect(() => {
+    messagesRef.current = messages
+  }, [messages])
 
   // Enhanced stop function that marks pending tool calls as cancelled
   const handleStop = useCallback(() => {
@@ -305,7 +309,7 @@ interface ChatFormProps {
 }
 
 export const ChatForm = forwardRef<HTMLFormElement, ChatFormProps>(
-  ({ children, handleSubmit, isPending, className }, ref) => {
+  ({ children, handleSubmit, className }, ref) => {
     const [files, setFiles] = useState<File[] | null>(null)
 
     const onSubmit = (event: React.FormEvent) => {

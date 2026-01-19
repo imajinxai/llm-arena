@@ -1,5 +1,4 @@
 import React, { useEffect } from "react"
-import { motion } from "framer-motion"
 import { File as FileIcon, X } from "@phosphor-icons/react"
 
 interface FilePreviewProps {
@@ -29,16 +28,11 @@ FilePreview.displayName = "FilePreview"
 const ImageFilePreview = React.forwardRef<HTMLDivElement, FilePreviewProps>(
   ({ file, onRemove }, ref) => {
     return (
-      <motion.div
+      <div
         ref={ref}
-        className="relative flex max-w-[200px] rounded-md border p-1.5 pr-2 text-xs"
-        layout
-        initial={{ opacity: 0, y: "100%" }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: "100%" }}
+        className="relative flex max-w-[200px] rounded-md border p-1.5 pr-2 text-xs animate-in fade-in-0 slide-in-from-bottom-2 duration-200"
       >
         <div className="flex w-full items-center space-x-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt={`Attachment ${file.name}`}
             className="grid h-10 w-10 shrink-0 place-items-center rounded-sm border bg-muted object-cover"
@@ -59,7 +53,7 @@ const ImageFilePreview = React.forwardRef<HTMLDivElement, FilePreviewProps>(
             <X className="h-2.5 w-2.5" />
           </button>
         ) : null}
-      </motion.div>
+      </div>
     )
   }
 )
@@ -79,13 +73,9 @@ const TextFilePreview = React.forwardRef<HTMLDivElement, FilePreviewProps>(
     }, [file])
 
     return (
-      <motion.div
+      <div
         ref={ref}
-        className="relative flex max-w-[200px] rounded-md border p-1.5 pr-2 text-xs"
-        layout
-        initial={{ opacity: 0, y: "100%" }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: "100%" }}
+        className="relative flex max-w-[200px] rounded-md border p-1.5 pr-2 text-xs animate-in fade-in-0 slide-in-from-bottom-2 duration-200"
       >
         <div className="flex w-full items-center space-x-2">
           <div className="grid h-10 w-10 shrink-0 place-items-center rounded-sm border bg-muted p-0.5">
@@ -108,7 +98,7 @@ const TextFilePreview = React.forwardRef<HTMLDivElement, FilePreviewProps>(
             <X className="h-2.5 w-2.5" />
           </button>
         ) : null}
-      </motion.div>
+      </div>
     )
   }
 )
@@ -117,13 +107,9 @@ TextFilePreview.displayName = "TextFilePreview"
 const GenericFilePreview = React.forwardRef<HTMLDivElement, FilePreviewProps>(
   ({ file, onRemove }, ref) => {
     return (
-      <motion.div
+      <div
         ref={ref}
-        className="relative flex max-w-[200px] rounded-md border p-1.5 pr-2 text-xs"
-        layout
-        initial={{ opacity: 0, y: "100%" }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: "100%" }}
+        className="relative flex max-w-[200px] rounded-md border p-1.5 pr-2 text-xs animate-in fade-in-0 slide-in-from-bottom-2 duration-200"
       >
         <div className="flex w-full items-center space-x-2">
           <div className="grid h-10 w-10 shrink-0 place-items-center rounded-sm border bg-muted">
@@ -144,7 +130,7 @@ const GenericFilePreview = React.forwardRef<HTMLDivElement, FilePreviewProps>(
             <X className="h-2.5 w-2.5" />
           </button>
         ) : null}
-      </motion.div>
+      </div>
     )
   }
 )

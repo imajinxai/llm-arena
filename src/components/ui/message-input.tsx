@@ -1,8 +1,7 @@
 "use client"
 
 import React, { useEffect, useRef, useState } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import { ArrowUp, Info, CircleNotch, Microphone, Paperclip, Stop, X } from "@phosphor-icons/react"
+import { ArrowUp, Info, CircleNotch, Microphone, Paperclip, Stop } from "@phosphor-icons/react"
 import { omit } from "remeda"
 
 import { cn } from "@/lib/utils"
@@ -218,27 +217,25 @@ export function MessageInput({
           {props.allowAttachments && (
             <div className="absolute inset-x-3 bottom-0 z-20 overflow-x-scroll py-3">
               <div className="flex space-x-3">
-                <AnimatePresence mode="popLayout">
-                  {props.files?.map((file) => {
-                    return (
-                      <FilePreview
-                        key={file.name + String(file.lastModified)}
-                        file={file}
-                        onRemove={() => {
-                          props.setFiles((files) => {
-                            if (!files) return null
+                {props.files?.map((file) => {
+                  return (
+                    <FilePreview
+                      key={file.name + String(file.lastModified)}
+                      file={file}
+                      onRemove={() => {
+                        props.setFiles((files) => {
+                          if (!files) return null
 
-                            const filtered = Array.from(files).filter(
-                              (f) => f !== file
-                            )
-                            if (filtered.length === 0) return null
-                            return filtered
-                          })
-                        }}
-                      />
-                    )
-                  })}
-                </AnimatePresence>
+                          const filtered = Array.from(files).filter(
+                            (f) => f !== file
+                          )
+                          if (filtered.length === 0) return null
+                          return filtered
+                        })
+                      }}
+                    />
+                  )
+                })}
               </div>
             </div>
           )}
@@ -315,22 +312,16 @@ interface FileUploadOverlayProps {
 }
 
 function FileUploadOverlay({ isDragging }: FileUploadOverlayProps) {
+  if (!isDragging) return null
+  
   return (
-    <AnimatePresence>
-      {isDragging && (
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center space-x-2 rounded-xl border border-dashed border-border bg-background text-sm text-muted-foreground"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          aria-hidden
-        >
-          <Paperclip className="h-4 w-4" />
-          <span>Drop your files here to attach them.</span>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div
+      className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center space-x-2 rounded-xl border border-dashed border-border bg-background text-sm text-muted-foreground animate-in fade-in-0 duration-200"
+      aria-hidden
+    >
+      <Paperclip className="h-4 w-4" />
+      <span>Drop your files here to attach them.</span>
+    </div>
   )
 }
 
@@ -358,31 +349,15 @@ function showFileUploadDialog() {
 
 function TranscribingOverlay() {
   return (
-    <motion.div
-      className="flex h-full w-full flex-col items-center justify-center rounded-xl bg-background/80 backdrop-blur-sm"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-    >
+    <div className="flex h-full w-full flex-col items-center justify-center rounded-xl bg-background/80 backdrop-blur-sm animate-in fade-in-0 duration-200">
       <div className="relative">
         <CircleNotch className="h-8 w-8 animate-spin text-primary" />
-        <motion.div
-          className="absolute inset-0 h-8 w-8 animate-pulse rounded-full bg-primary/20"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1.2, opacity: 1 }}
-          transition={{
-            duration: 1,
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "easeInOut",
-          }}
-        />
+        <div className="absolute inset-0 h-8 w-8 animate-pulse rounded-full bg-primary/20" />
       </div>
       <p className="mt-4 text-sm font-medium text-muted-foreground">
         Transcribing audio...
       </p>
-    </motion.div>
+    </div>
   )
 }
 
@@ -392,30 +367,18 @@ interface RecordingPromptProps {
 }
 
 function RecordingPrompt({ isVisible, onStopRecording }: RecordingPromptProps) {
+  if (!isVisible) return null
+  
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ top: 0, filter: "blur(5px)" }}
-          animate={{
-            top: -40,
-            filter: "blur(0px)",
-            transition: {
-              type: "spring",
-              filter: { type: "tween" },
-            },
-          }}
-          exit={{ top: 0, filter: "blur(5px)" }}
-          className="absolute left-1/2 flex -translate-x-1/2 cursor-pointer overflow-hidden whitespace-nowrap rounded-full border bg-background py-1 text-center text-sm text-muted-foreground"
-          onClick={onStopRecording}
-        >
-          <span className="mx-2.5 flex items-center">
-            <Info className="mr-2 h-3 w-3" />
-            Click to finish recording
-          </span>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div
+      className="absolute -top-10 left-1/2 flex -translate-x-1/2 cursor-pointer overflow-hidden whitespace-nowrap rounded-full border bg-background py-1 text-center text-sm text-muted-foreground animate-in fade-in-0 slide-in-from-bottom-2 duration-200"
+      onClick={onStopRecording}
+    >
+      <span className="mx-2.5 flex items-center">
+        <Info className="mr-2 h-3 w-3" />
+        Click to finish recording
+      </span>
+    </div>
   )
 }
 

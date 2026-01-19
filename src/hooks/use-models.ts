@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useAPIConfig } from '@/stores/api-config'
 import type { LLMModel } from '@/types'
 
@@ -29,8 +29,11 @@ export function useModels() {
   const [models, setModels] = useState<LLMModel[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [refreshKey, setRefreshKey] = useState(0)
 
   useEffect(() => {
+    const abortController = new AbortController()
+
     async function fetchModels() {
       if (!config.apiKey || !config.baseUrl) {
         setModels([])
@@ -46,6 +49,7 @@ export function useModels() {
             'Authorization': `Bearer ${config.apiKey}`,
             'Content-Type': 'application/json',
           },
+          signal: abortController.signal,
         })
 
         if (!response.ok) {
@@ -65,7 +69,6 @@ export function useModels() {
           icon: getModelIcon(model.owned_by),
         }))
 
-        // Sort models by provider, then by name
         llmModels.sort((a, b) => {
           if (a.provider !== b.provider) {
             return a.provider.localeCompare(b.provider)
@@ -75,6 +78,7 @@ export function useModels() {
 
         setModels(llmModels)
       } catch (err) {
+        if ((err as Error).name === 'AbortError') return
         setError(err instanceof Error ? err.message : 'Failed to fetch models')
         setModels([])
       } finally {
@@ -83,16 +87,17 @@ export function useModels() {
     }
 
     fetchModels()
-  }, [config.apiKey, config.baseUrl])
 
-  const refetch = () => {
-    if (config.apiKey && config.baseUrl) {
-      setModels([])
-      // Trigger re-fetch by updating a dependency
-      const event = new CustomEvent('refetch-models')
-      window.dispatchEvent(event)
+    return () => {
+      abortController.abort()
     }
-  }
+  }, [config.apiKey, config.baseUrl, refreshKey])
+
+  const refetch = useCallback(() => {
+    if (config.apiKey && config.baseUrl) {
+      setRefreshKey((k) => k + 1)
+    }
+  }, [config.apiKey, config.baseUrl])
 
   return { models, isLoading, error, refetch }
 }

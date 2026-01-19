@@ -1,4 +1,3 @@
-import { AnimatePresence, motion } from "framer-motion"
 import { X } from "@phosphor-icons/react"
 
 interface InterruptPromptProps {
@@ -7,33 +6,19 @@ interface InterruptPromptProps {
 }
 
 export function InterruptPrompt({ isOpen, close }: InterruptPromptProps) {
+  if (!isOpen) return null
+  
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ top: 0, filter: "blur(5px)" }}
-          animate={{
-            top: -40,
-            filter: "blur(0px)",
-            transition: {
-              type: "spring",
-              filter: { type: "tween" },
-            },
-          }}
-          exit={{ top: 0, filter: "blur(5px)" }}
-          className="absolute left-1/2 flex -translate-x-1/2 overflow-hidden whitespace-nowrap rounded-full border bg-background py-1 text-center text-sm text-muted-foreground"
-        >
-          <span className="ml-2.5">Press Enter again to interrupt</span>
-          <button
-            className="ml-1 mr-2.5 flex items-center"
-            type="button"
-            onClick={close}
-            aria-label="Close"
-          >
-            <X className="h-3 w-3" />
-          </button>
-        </motion.div>
-      )}
-    </AnimatePresence>
+    <div className="absolute -top-10 left-1/2 flex -translate-x-1/2 overflow-hidden whitespace-nowrap rounded-full border bg-background py-1 text-center text-sm text-muted-foreground animate-in fade-in-0 slide-in-from-bottom-2 duration-200">
+      <span className="ml-2.5">Press Enter again to interrupt</span>
+      <button
+        className="ml-1 mr-2.5 flex items-center"
+        type="button"
+        onClick={close}
+        aria-label="Close"
+      >
+        <X className="h-3 w-3" />
+      </button>
+    </div>
   )
 }

@@ -1,4 +1,4 @@
-import { useCallback, type ChangeEvent } from 'react'
+import { useCallback, useMemo, type ChangeEvent } from 'react'
 import { ChatContainer, ChatMessages, ChatForm } from '@/components/ui/chat'
 import { MessageInput } from '@/components/ui/message-input'
 import { MessageList } from '@/components/ui/message-list'
@@ -25,12 +25,13 @@ interface ChatPanelProps {
   onDelete: () => void
 }
 
-function convertToMessages(messages: ChatMessage[]): Message[] {
-  return messages.map((msg) => ({
+function convertToMessages(messages: ChatMessage[], isGenerating: boolean): Message[] {
+  return messages.map((msg, index) => ({
     id: msg.id,
     role: msg.role,
     content: msg.content,
     createdAt: msg.createdAt,
+    isStreaming: isGenerating && msg.role === 'assistant' && index === messages.length - 1,
   }))
 }
 
@@ -49,8 +50,10 @@ export function ChatPanel({
   onMoveRight,
   onDelete,
 }: ChatPanelProps) {
-  const messages = convertToMessages(panel.messages)
-  const isEmpty = messages.length === 0
+  const messages = useMemo(
+    () => convertToMessages(panel.messages, panel.isGenerating),
+    [panel.messages, panel.isGenerating]
+  )
   const lastMessage = messages.at(-1)
   const isTyping = lastMessage?.role === 'user'
 

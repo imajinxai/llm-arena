@@ -9,31 +9,32 @@ import { cn } from '@/lib/utils'
 
 function App() {
   const [isSyncMode, setIsSyncMode] = useState(false)
-  const [position, setPosition] = useState({ x: window.innerWidth - 60, y: window.innerHeight / 2 - 60 })
   const [isDragging, setIsDragging] = useState(false)
   const dragRef = useRef<HTMLDivElement>(null)
+  const positionRef = useRef({ x: window.innerWidth - 60, y: window.innerHeight / 2 - 60 })
   const dragStartRef = useRef({ x: 0, y: 0, posX: 0, posY: 0 })
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('button')) return
+    e.preventDefault()
     setIsDragging(true)
     dragStartRef.current = {
       x: e.clientX,
       y: e.clientY,
-      posX: position.x,
-      posY: position.y,
+      posX: positionRef.current.x,
+      posY: positionRef.current.y,
     }
-  }, [position])
+  }, [])
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return
+      if (!isDragging || !dragRef.current) return
       const dx = e.clientX - dragStartRef.current.x
       const dy = e.clientY - dragStartRef.current.y
-      setPosition({
-        x: Math.max(0, Math.min(window.innerWidth - 48, dragStartRef.current.posX + dx)),
-        y: Math.max(0, Math.min(window.innerHeight - 120, dragStartRef.current.posY + dy)),
-      })
+      const newX = Math.max(0, Math.min(window.innerWidth - 48, dragStartRef.current.posX + dx))
+      const newY = Math.max(0, Math.min(window.innerHeight - 120, dragStartRef.current.posY + dy))
+      positionRef.current = { x: newX, y: newY }
+      dragRef.current.style.transform = `translate3d(${newX}px, ${newY}px, 0)`
     }
 
     const handleMouseUp = () => setIsDragging(false)
@@ -48,6 +49,12 @@ function App() {
       document.removeEventListener('mouseup', handleMouseUp)
     }
   }, [isDragging])
+
+  useEffect(() => {
+    if (dragRef.current) {
+      dragRef.current.style.transform = `translate3d(${positionRef.current.x}px, ${positionRef.current.y}px, 0)`
+    }
+  }, [])
 
   const {
     panels,
@@ -76,7 +83,7 @@ function App() {
           'fixed z-50 flex flex-col gap-1 p-1 rounded-lg border bg-background/80 backdrop-blur-sm shadow-md',
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         )}
-        style={{ left: position.x, top: position.y }}
+        style={{ left: 0, top: 0, willChange: 'transform' }}
       >
         <div className="flex justify-center py-0.5">
           <DotsSixVertical className="h-3 w-3 text-muted-foreground" weight="bold" />

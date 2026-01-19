@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import { motion } from "framer-motion"
 import { Prohibit, CaretRight, Code, CircleNotch, Terminal } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
@@ -96,7 +95,6 @@ interface TextPart {
   text: string
 }
 
-// For compatibility with AI SDK types, not used
 interface SourcePart {
   type: "source"
   source?: any
@@ -128,6 +126,7 @@ export interface Message {
   experimental_attachments?: Attachment[]
   toolInvocations?: ToolInvocation[]
   parts?: MessagePart[]
+  isStreaming?: boolean
 }
 
 export interface ChatMessageProps extends Message {
@@ -146,10 +145,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   experimental_attachments,
   toolInvocations,
   parts,
+  isStreaming = false,
 }) => {
   const files = useMemo(() => {
     return experimental_attachments?.map((attachment) => {
-      const dataArray = dataUrlToUint8Array(attachment.url)
+      const dataArray = base64ToUint8Array(attachment.url)
       const file = new File([dataArray], attachment.name ?? "Unknown", {
         type: attachment.contentType,
       })
@@ -208,7 +208,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
             key={`text-${index}`}
           >
             <div className={cn(chatBubbleVariants({ isUser, animation }))}>
-              <MarkdownRenderer>{part.text}</MarkdownRenderer>
+              <MarkdownRenderer isStreaming={isStreaming}>{part.text}</MarkdownRenderer>
               {actions ? (
                 <div className="absolute -bottom-4 right-2 flex space-x-1 rounded-lg border bg-background p-1 text-foreground opacity-0 transition-opacity group-hover/message:opacity-100">
                   {actions}
@@ -233,7 +233,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
         return <ReasoningBlock key={`reasoning-${index}`} part={part} />
       } else if (part.type === "tool-invocation") {
         return (
-          <ToolCall
+          <ToolCallBlock
             key={`tool-${index}`}
             toolInvocations={[part.toolInvocation]}
           />
@@ -244,13 +244,13 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   }
 
   if (toolInvocations && toolInvocations.length > 0) {
-    return <ToolCall toolInvocations={toolInvocations} />
+    return <ToolCallBlock toolInvocations={toolInvocations} />
   }
 
   return (
     <div className={cn("flex flex-col", isUser ? "items-end" : "items-start")}>
       <div className={cn(chatBubbleVariants({ isUser, animation }))}>
-        <MarkdownRenderer>{content}</MarkdownRenderer>
+        <MarkdownRenderer isStreaming={isStreaming}>{content}</MarkdownRenderer>
         {actions ? (
           <div className="absolute -bottom-4 right-2 flex space-x-1 rounded-lg border bg-background p-1 text-foreground opacity-0 transition-opacity group-hover/message:opacity-100">
             {actions}
@@ -273,10 +273,16 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   )
 }
 
-function dataUrlToUint8Array(data: string) {
-  const base64 = data.split(",")[1]
-  const buf = Buffer.from(base64, "base64")
-  return new Uint8Array(buf)
+function base64ToUint8Array(dataUrl: string): ArrayBuffer {
+  const base64 = dataUrl.split(",")[1]
+  if (!base64) return new ArrayBuffer(0)
+  
+  const binary = atob(base64)
+  const bytes = new Uint8Array(binary.length)
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i)
+  }
+  return bytes.buffer as ArrayBuffer
 }
 
 const ReasoningBlock = ({ part }: { part: ReasoningPart }) => {
@@ -292,35 +298,27 @@ const ReasoningBlock = ({ part }: { part: ReasoningPart }) => {
         <div className="flex items-center p-2">
           <CollapsibleTrigger asChild>
             <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-              <CaretRight className="h-4 w-4 transition-transform group-data-[state=open]:rotate-90" />
+              <CaretRight className={cn(
+                "h-4 w-4 transition-transform duration-200",
+                isOpen && "rotate-90"
+              )} />
               <span>Thinking</span>
             </button>
           </CollapsibleTrigger>
         </div>
-        <CollapsibleContent forceMount>
-          <motion.div
-            initial={false}
-            animate={isOpen ? "open" : "closed"}
-            variants={{
-              open: { height: "auto", opacity: 1 },
-              closed: { height: 0, opacity: 0 },
-            }}
-            transition={{ duration: 0.3, ease: [0.04, 0.62, 0.23, 0.98] }}
-            className="border-t"
-          >
-            <div className="p-2">
-              <div className="whitespace-pre-wrap text-xs">
-                {part.reasoning}
-              </div>
+        <CollapsibleContent className="overflow-hidden data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
+          <div className="border-t p-2">
+            <div className="whitespace-pre-wrap text-xs">
+              {part.reasoning}
             </div>
-          </motion.div>
+          </div>
         </CollapsibleContent>
       </Collapsible>
     </div>
   )
 }
 
-function ToolCall({
+function ToolCallBlock({
   toolInvocations,
 }: Pick<ChatMessageProps, "toolInvocations">) {
   if (!toolInvocations?.length) return null
