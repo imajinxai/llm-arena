@@ -1,19 +1,44 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
 
-  @keyframes typing-dot-bounce {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-4px);
-    }
+@keyframes typing-dot-bounce {
+  0%, 100% {
+    transform: translateY(0);
   }
+  50% {
+    transform: translateY(-4px);
+  }
+}
 
-  @utility animate-typing-dot-bounce {
-    animation: typing-dot-bounce 0.6s infinite ease-in-out;
+@keyframes gradient-rotate {
+  0% {
+    --gradient-angle: 0deg;
   }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+@utility animate-typing-dot-bounce {
+  animation: typing-dot-bounce 0.6s infinite ease-in-out;
+}
+
+@utility animate-gradient-border {
+  background: conic-gradient(
+    from var(--gradient-angle),
+    #f97316,
+    #ec4899,
+    #a855f7,
+    #f97316
+  );
+  animation: gradient-rotate 3s linear infinite;
+}
 
 @custom-variant dark (&:is(.dark *));
 

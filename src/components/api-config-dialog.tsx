@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Gear } from '@phosphor-icons/react'
+import { Key } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -34,7 +34,7 @@ export function APIConfigDialog() {
     <Dialog open={open} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="icon" className="h-8 w-8">
-          <Gear className="h-4 w-4" weight="bold" />
+          <Key className="h-4 w-4" weight="bold" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">

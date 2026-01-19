@@ -4,7 +4,7 @@ import { ChatPanel } from '@/components/chat-panel'
 import { SyncInput } from '@/components/sync-input'
 import { APIConfigDialog } from '@/components/api-config-dialog'
 import { Button } from '@/components/ui/button'
-import { Link, LinkBreak, DotsSixVertical, Plus } from '@phosphor-icons/react'
+import { Link, LinkBreak, DotsSix, Plus } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 
 function App() {
@@ -79,31 +79,33 @@ function App() {
         ref={dragRef}
         onMouseDown={handleMouseDown}
         className={cn(
-          'fixed z-50 flex flex-col gap-1 p-1 rounded-lg border bg-background/80 backdrop-blur-sm shadow-md',
+          'fixed z-50 p-[2px] rounded-lg animate-gradient-border',
           isDragging ? 'cursor-grabbing' : 'cursor-grab'
         )}
         style={{ left: 0, top: 0, willChange: 'transform' }}
       >
-        <div className="flex justify-center py-0.5">
-          <DotsSixVertical className="h-3 w-3 text-muted-foreground" weight="bold" />
+        <div className="flex flex-col gap-1 p-1 rounded-[8px] bg-background/95 backdrop-blur-sm">
+          <div className="flex justify-center py-0.5">
+            <DotsSix className="h-3 w-3 text-muted-foreground" weight="bold" />
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={addPanel}
+            className="h-8 w-8"
+          >
+            <Plus className="h-4 w-4" weight="bold" />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => setIsSyncMode(!isSyncMode)}
+            className={cn('h-8 w-8', isSyncMode && 'bg-primary text-primary-foreground hover:bg-primary/90')}
+          >
+            {isSyncMode ? <Link className="h-4 w-4" weight="bold" /> : <LinkBreak className="h-4 w-4" weight="bold" />}
+          </Button>
+          <APIConfigDialog />
         </div>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={addPanel}
-          className="h-8 w-8"
-        >
-          <Plus className="h-4 w-4" weight="bold" />
-        </Button>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => setIsSyncMode(!isSyncMode)}
-          className={cn('h-8 w-8', isSyncMode && 'bg-primary text-primary-foreground hover:bg-primary/90')}
-        >
-          {isSyncMode ? <Link className="h-4 w-4" weight="bold" /> : <LinkBreak className="h-4 w-4" weight="bold" />}
-        </Button>
-        <APIConfigDialog />
       </div>
       <div className={cn(
         "flex-1 flex p-2 gap-2",
