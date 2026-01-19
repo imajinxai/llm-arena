@@ -1,27 +1,24 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { nanoid } from 'nanoid'
 import type { ChatPanel, ChatMessage, LLMModel, ModelConfig } from '@/types'
 import { defaultModelConfig } from '@/types'
 import { useAPIConfig } from '@/stores/api-config'
 
-interface ChatCompletionResponse {
+interface StreamChoice {
+  index: number
+  delta: {
+    role?: string
+    content?: string
+  }
+  finish_reason: string | null
+}
+
+interface StreamChunk {
   id: string
   object: string
   created: number
   model: string
-  choices: {
-    index: number
-    message: {
-      role: string
-      content: string
-    }
-    finish_reason: string
-  }[]
-  usage?: {
-    prompt_tokens: number
-    completion_tokens: number
-    total_tokens: number
-  }
+  choices: StreamChoice[]
 }
 
 export function useChatPanels() {
@@ -29,6 +26,7 @@ export function useChatPanels() {
     createPanel(),
   ])
   const { config: apiConfig } = useAPIConfig()
+  const abortControllersRef = useRef<Map<string, AbortController>>(new Map())
 
   function createPanel(model: LLMModel | null = null): ChatPanel {
     return {
@@ -100,6 +98,7 @@ export function useChatPanels() {
       createdAt: new Date(),
     }
 
+    const assistantMessageId = nanoid()
     const updatedMessages = [...panel.messages, userMessage]
 
     updatePanel(panelId, {
@@ -130,6 +129,9 @@ export function useChatPanels() {
       return
     }
 
+    const abortController = new AbortController()
+    abortControllersRef.current.set(panelId, abortController)
+
     try {
       const response = await fetch(`${apiConfig.baseUrl}/chat/completions`, {
         method: 'POST',
@@ -146,7 +148,9 @@ export function useChatPanels() {
           max_tokens: panel.config.maxOutputTokens,
           temperature: panel.config.temperature,
           top_p: panel.config.topP,
+          stream: true,
         }),
+        signal: abortController.signal,
       })
 
       if (!response.ok) {
@@ -154,27 +158,81 @@ export function useChatPanels() {
         throw new Error(errorData.error?.message || `HTTP ${response.status}: ${response.statusText}`)
       }
 
-      const data: ChatCompletionResponse = await response.json()
+      const reader = response.body?.getReader()
+      if (!reader) throw new Error('No response body')
+
+      const decoder = new TextDecoder()
+      let accumulatedContent = ''
 
       const assistantMessage: ChatMessage = {
-        id: nanoid(),
+        id: assistantMessageId,
         role: 'assistant',
-        content: data.choices[0]?.message?.content || 'No response received.',
+        content: '',
         createdAt: new Date(),
       }
 
       setPanels((prev) =>
         prev.map((p) =>
           p.id === panelId
-            ? {
-                ...p,
-                messages: [...updatedMessages, assistantMessage],
-                isGenerating: false,
-              }
+            ? { ...p, messages: [...updatedMessages, assistantMessage] }
             : p
         )
       )
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+
+        const chunk = decoder.decode(value, { stream: true })
+        const lines = chunk.split('\n').filter((line) => line.trim() !== '')
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6)
+            if (data === '[DONE]') continue
+
+            try {
+              const parsed: StreamChunk = JSON.parse(data)
+              const delta = parsed.choices[0]?.delta?.content
+              if (delta) {
+                accumulatedContent += delta
+                setPanels((prev) =>
+                  prev.map((p) =>
+                    p.id === panelId
+                      ? {
+                          ...p,
+                          messages: p.messages.map((m) =>
+                            m.id === assistantMessageId
+                              ? { ...m, content: accumulatedContent }
+                              : m
+                          ),
+                        }
+                      : p
+                  )
+                )
+              }
+            } catch {
+              // Skip invalid JSON chunks
+            }
+          }
+        }
+      }
+
+      setPanels((prev) =>
+        prev.map((p) =>
+          p.id === panelId ? { ...p, isGenerating: false } : p
+        )
+      )
     } catch (error) {
+      if ((error as Error).name === 'AbortError') {
+        setPanels((prev) =>
+          prev.map((p) =>
+            p.id === panelId ? { ...p, isGenerating: false } : p
+          )
+        )
+        return
+      }
+
       const errorMessage: ChatMessage = {
         id: nanoid(),
         role: 'assistant',
@@ -193,12 +251,36 @@ export function useChatPanels() {
             : p
         )
       )
+    } finally {
+      abortControllersRef.current.delete(panelId)
     }
   }, [panels, updatePanel, apiConfig])
 
+  const sendToAllPanels = useCallback(async (content: string) => {
+    const panelsWithModels = panels.filter((p) => p.model !== null)
+    if (panelsWithModels.length === 0) return
+
+    await Promise.all(
+      panelsWithModels.map((panel) => sendMessage(panel.id, content))
+    )
+  }, [panels, sendMessage])
+
   const stopGeneration = useCallback((panelId: string) => {
+    const controller = abortControllersRef.current.get(panelId)
+    if (controller) {
+      controller.abort()
+      abortControllersRef.current.delete(panelId)
+    }
     updatePanel(panelId, { isGenerating: false })
   }, [updatePanel])
+
+  const stopAllGenerations = useCallback(() => {
+    panels.forEach((panel) => {
+      if (panel.isGenerating) {
+        stopGeneration(panel.id)
+      }
+    })
+  }, [panels, stopGeneration])
 
   return {
     panels,
@@ -211,6 +293,8 @@ export function useChatPanels() {
     clearMessages,
     movePanel,
     sendMessage,
+    sendToAllPanels,
     stopGeneration,
+    stopAllGenerations,
   }
 }
