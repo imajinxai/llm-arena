@@ -122,6 +122,7 @@ export interface Message {
   id: string
   role: "user" | "assistant" | (string & {})
   content: string
+  reasoning?: string
   createdAt?: Date
   experimental_attachments?: Attachment[]
   toolInvocations?: ToolInvocation[]
@@ -138,6 +139,7 @@ export interface ChatMessageProps extends Message {
 export const ChatMessage: React.FC<ChatMessageProps> = ({
   role,
   content,
+  reasoning,
   createdAt,
   showTimeStamp = false,
   animation = "scale",
@@ -249,6 +251,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
 
   return (
     <div className={cn("flex flex-col", isUser ? "items-end" : "items-start")}>
+      {reasoning && (
+        <ReasoningBlock part={{ type: "reasoning", reasoning }} />
+      )}
       <div className={cn(chatBubbleVariants({ isUser, animation }))}>
         <MarkdownRenderer isStreaming={isStreaming}>{content}</MarkdownRenderer>
         {actions ? (

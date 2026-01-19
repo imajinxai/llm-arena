@@ -9,6 +9,8 @@ interface StreamChoice {
   delta: {
     role?: string
     content?: string
+    reasoning_content?: string
+    reasoning?: string
   }
   finish_reason: string | null
 }
@@ -181,6 +183,7 @@ export function useChatPanels() {
 
       const decoder = new TextDecoder()
       const contentRef = { current: '' }
+      const reasoningRef = { current: '' }
       let buffer = ''
       let lastUpdateTime = 0
       let pendingUpdate = false
@@ -208,7 +211,11 @@ export function useChatPanels() {
                   ...p,
                   messages: p.messages.map((m) =>
                     m.id === assistantMessageId
-                      ? { ...m, content: contentRef.current }
+                      ? { 
+                          ...m, 
+                          content: contentRef.current,
+                          reasoning: reasoningRef.current || undefined,
+                        }
                       : m
                   ),
                 }
@@ -253,9 +260,18 @@ export function useChatPanels() {
 
           try {
             const parsed: StreamChunk = JSON.parse(data)
-            const delta = parsed.choices[0]?.delta?.content
-            if (delta) {
-              contentRef.current += delta
+            const choice = parsed.choices[0]?.delta
+            
+            // Handle content
+            if (choice?.content) {
+              contentRef.current += choice.content
+              scheduleUpdate()
+            }
+            
+            // Handle reasoning (supports reasoning_content and reasoning fields)
+            const reasoning = choice?.reasoning_content || choice?.reasoning
+            if (reasoning) {
+              reasoningRef.current += reasoning
               scheduleUpdate()
             }
           } catch {
@@ -269,9 +285,15 @@ export function useChatPanels() {
         if (trimmed.startsWith('data: ') && trimmed.slice(6) !== '[DONE]') {
           try {
             const parsed: StreamChunk = JSON.parse(trimmed.slice(6))
-            const delta = parsed.choices[0]?.delta?.content
-            if (delta) {
-              contentRef.current += delta
+            const choice = parsed.choices[0]?.delta
+            
+            if (choice?.content) {
+              contentRef.current += choice.content
+            }
+            
+            const reasoning = choice?.reasoning_content || choice?.reasoning
+            if (reasoning) {
+              reasoningRef.current += reasoning
             }
           } catch {
             // Skip invalid JSON

@@ -29,6 +29,7 @@ function convertToMessages(messages: ChatMessage[], isGenerating: boolean): Mess
     id: msg.id,
     role: msg.role,
     content: msg.content,
+    reasoning: msg.reasoning,
     createdAt: msg.createdAt,
     isStreaming: isGenerating && msg.role === 'assistant' && index === messages.length - 1,
   }))
