@@ -1,4 +1,4 @@
-import { MoreHorizontal, Trash2, ArrowLeft, ArrowRight, RotateCcw } from 'lucide-react'
+import { DotsThree, Trash, ArrowLeft, ArrowRight, ArrowCounterClockwise } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -31,12 +31,12 @@ export function PanelActionsMenu({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8">
-          <MoreHorizontal className="h-4 w-4" />
+          <DotsThree className="h-4 w-4" weight="bold" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-48">
         <DropdownMenuItem onClick={onClearChat}>
-          <RotateCcw className="mr-2 h-4 w-4" />
+          <ArrowCounterClockwise className="mr-2 h-4 w-4" />
           Clear chat
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -54,7 +54,7 @@ export function PanelActionsMenu({
           disabled={!canDelete}
           className="text-destructive focus:text-destructive"
         >
-          <Trash2 className="mr-2 h-4 w-4" />
+          <Trash className="mr-2 h-4 w-4" />
           Delete chat
         </DropdownMenuItem>
       </DropdownMenuContent>

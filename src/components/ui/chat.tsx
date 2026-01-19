@@ -7,7 +7,7 @@ import {
   useState,
   type ReactElement,
 } from "react"
-import { ArrowDown, ThumbsDown, ThumbsUp } from "lucide-react"
+import { ArrowDown, ThumbsDown, ThumbsUp } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 import { useAutoScroll } from "@/hooks/use-auto-scroll"

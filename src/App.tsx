@@ -4,7 +4,7 @@ import { ChatPanel } from '@/components/chat-panel'
 import { SyncInput } from '@/components/sync-input'
 import { APIConfigDialog } from '@/components/api-config-dialog'
 import { Button } from '@/components/ui/button'
-import { Link2, Link2Off, GripVertical, Plus } from 'lucide-react'
+import { Link, LinkBreak, DotsSixVertical, Plus } from '@phosphor-icons/react'
 import { cn } from '@/lib/utils'
 
 function App() {
@@ -79,7 +79,7 @@ function App() {
         style={{ left: position.x, top: position.y }}
       >
         <div className="flex justify-center py-0.5">
-          <GripVertical className="h-3 w-3 text-muted-foreground" />
+          <DotsSixVertical className="h-3 w-3 text-muted-foreground" weight="bold" />
         </div>
         <Button
           variant="outline"
@@ -87,7 +87,7 @@ function App() {
           onClick={addPanel}
           className="h-8 w-8"
         >
-          <Plus className="h-4 w-4" />
+          <Plus className="h-4 w-4" weight="bold" />
         </Button>
         <Button
           variant="outline"
@@ -95,7 +95,7 @@ function App() {
           onClick={() => setIsSyncMode(!isSyncMode)}
           className={cn('h-8 w-8', isSyncMode && 'bg-primary text-primary-foreground hover:bg-primary/90')}
         >
-          {isSyncMode ? <Link2 className="h-4 w-4" /> : <Link2Off className="h-4 w-4" />}
+          {isSyncMode ? <Link className="h-4 w-4" weight="bold" /> : <LinkBreak className="h-4 w-4" weight="bold" />}
         </Button>
         <APIConfigDialog />
       </div>

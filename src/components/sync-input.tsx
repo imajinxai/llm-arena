@@ -1,5 +1,5 @@
 import { useState, useCallback, type ChangeEvent } from 'react'
-import { ArrowUp, Square, Link2 } from 'lucide-react'
+import { ArrowUp, Stop } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -77,7 +77,7 @@ export function SyncInput({
                 className="h-7 w-7"
                 onClick={onStopAll}
               >
-                <Square className="h-3 w-3 animate-pulse" fill="currentColor" />
+                <Stop className="h-3 w-3 animate-pulse" weight="fill" />
               </Button>
             ) : (
               <Button
@@ -86,7 +86,7 @@ export function SyncInput({
                 className="h-7 w-7"
                 disabled={!input.trim() || isDisabled}
               >
-                <ArrowUp className="h-4 w-4" />
+                <ArrowUp className="h-4 w-4" weight="bold" />
               </Button>
             )}
           </div>

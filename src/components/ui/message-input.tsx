@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react"
 import { AnimatePresence, motion } from "framer-motion"
-import { ArrowUp, Info, Loader2, Mic, Paperclip, Square, X } from "lucide-react"
+import { ArrowUp, Info, CircleNotch, Microphone, Paperclip, Stop, X } from "@phosphor-icons/react"
 import { omit } from "remeda"
 
 import { cn } from "@/lib/utils"
@@ -270,7 +270,7 @@ export function MessageInput({
             size="icon"
             onClick={toggleListening}
           >
-            <Mic className="h-4 w-4" />
+            <Microphone className="h-4 w-4" />
           </Button>
         )}
         {isGenerating && stop ? (
@@ -281,7 +281,7 @@ export function MessageInput({
             aria-label="Stop generating"
             onClick={stop}
           >
-            <Square className="h-3 w-3 animate-pulse" fill="currentColor" />
+            <Stop className="h-3 w-3 animate-pulse" weight="fill" />
           </Button>
         ) : (
           <Button
@@ -366,7 +366,7 @@ function TranscribingOverlay() {
       transition={{ duration: 0.2 }}
     >
       <div className="relative">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <CircleNotch className="h-8 w-8 animate-spin text-primary" />
         <motion.div
           className="absolute inset-0 h-8 w-8 animate-pulse rounded-full bg-primary/20"
           initial={{ scale: 0.8, opacity: 0 }}

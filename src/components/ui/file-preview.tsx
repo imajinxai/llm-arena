@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 import { motion } from "framer-motion"
-import { FileIcon, X } from "lucide-react"
+import { File as FileIcon, X } from "@phosphor-icons/react"
 
 interface FilePreviewProps {
   file: File

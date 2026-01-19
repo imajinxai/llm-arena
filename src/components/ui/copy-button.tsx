@@ -1,4 +1,4 @@
-import { Check, Copy } from "lucide-react"
+import { Check, Copy } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 import { useCopyToClipboard } from "@/hooks/use-copy-to-clipboard"

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react"
 import { cva, type VariantProps } from "class-variance-authority"
 import { motion } from "framer-motion"
-import { Ban, ChevronRight, Code2, Loader2, Terminal } from "lucide-react"
+import { Prohibit, CaretRight, Code, CircleNotch, Terminal } from "@phosphor-icons/react"
 
 import { cn } from "@/lib/utils"
 import {
@@ -292,7 +292,7 @@ const ReasoningBlock = ({ part }: { part: ReasoningPart }) => {
         <div className="flex items-center p-2">
           <CollapsibleTrigger asChild>
             <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-              <ChevronRight className="h-4 w-4 transition-transform group-data-[state=open]:rotate-90" />
+              <CaretRight className="h-4 w-4 transition-transform group-data-[state=open]:rotate-90" />
               <span>Thinking</span>
             </button>
           </CollapsibleTrigger>
@@ -338,7 +338,7 @@ function ToolCall({
               key={index}
               className="flex items-center gap-2 rounded-lg border bg-muted/50 px-3 py-2 text-sm text-muted-foreground"
             >
-              <Ban className="h-4 w-4" />
+              <Prohibit className="h-4 w-4" />
               <span>
                 Cancelled{" "}
                 <span className="font-mono">
@@ -369,7 +369,7 @@ function ToolCall({
                   </span>
                   ...
                 </span>
-                <Loader2 className="h-3 w-3 animate-spin" />
+                <CircleNotch className="h-3 w-3 animate-spin" />
               </div>
             )
           case "result":
@@ -379,7 +379,7 @@ function ToolCall({
                 className="flex flex-col gap-1.5 rounded-lg border bg-muted/50 px-3 py-2 text-sm"
               >
                 <div className="flex items-center gap-2 text-muted-foreground">
-                  <Code2 className="h-4 w-4" />
+                  <Code className="h-4 w-4" />
                   <span>
                     Result from{" "}
                     <span className="font-mono">

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Settings2 } from 'lucide-react'
+import { Sliders } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
@@ -27,7 +27,7 @@ export function ModelConfigPopover({ config, onConfigChange }: ModelConfigPopove
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className="h-8 w-8">
-          <Settings2 className="h-4 w-4" />
+          <Sliders className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-80" align="end">

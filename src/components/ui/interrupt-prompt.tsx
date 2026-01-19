@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion"
-import { X } from "lucide-react"
+import { X } from "@phosphor-icons/react"
 
 interface InterruptPromptProps {
   isOpen: boolean

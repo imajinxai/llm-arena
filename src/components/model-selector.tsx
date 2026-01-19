@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Check, ChevronDown, Search, Loader2 } from 'lucide-react'
+import { Check, CaretDown, MagnifyingGlass, CircleNotch } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import {
   Popover,
@@ -52,12 +52,12 @@ export function ModelSelector({ value, onValueChange }: ModelSelectorProps) {
               </>
             ) : (
               <>
-                <Search className="h-4 w-4 text-muted-foreground" />
+                <MagnifyingGlass className="h-4 w-4 text-muted-foreground" />
                 <span className="text-muted-foreground">Select model...</span>
               </>
             )}
           </div>
-          <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+          <CaretDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[300px] p-0" align="start">
@@ -66,7 +66,7 @@ export function ModelSelector({ value, onValueChange }: ModelSelectorProps) {
           <CommandList>
             {isLoading && (
               <div className="flex items-center justify-center py-6 text-sm text-muted-foreground">
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <CircleNotch className="mr-2 h-4 w-4 animate-spin" />
                 Loading models...
               </div>
             )}
