@@ -1,73 +1,90 @@
-# React + TypeScript + Vite
+# LLM Arena
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React component library for comparing multiple LLM chat panels side-by-side. Compare responses from OpenAI, Anthropic, Google Gemini, and more in real-time.
 
-Currently, two official plugins are available:
+## Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install llm-arena
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Usage
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Full App Component
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```tsx
+import { LLMArena } from 'llm-arena'
+import 'llm-arena/styles.css'
+
+function App() {
+  return <LLMArena />
+}
 ```
+
+### Individual Components
+
+```tsx
+import { 
+  ChatPanel, 
+  useChatPanels, 
+  useModels,
+  Button,
+  MessageInput 
+} from 'llm-arena'
+import 'llm-arena/styles.css'
+
+function MyChat() {
+  const { panels, addPanel, sendMessage } = useChatPanels()
+  
+  return (
+    <div>
+      {panels.map(panel => (
+        <ChatPanel 
+          key={panel.id}
+          panel={panel}
+          // ... other props
+        />
+      ))}
+    </div>
+  )
+}
+```
+
+## Features
+
+- 🔄 Compare multiple LLM responses side-by-side
+- 🎨 Beautiful UI with dark/light theme support
+- ⚡ Real-time streaming responses
+- 🔧 Configurable model parameters (temperature, max tokens, etc.)
+- 📱 Responsive design
+- 🎯 Sync mode for sending prompts to all panels at once
+
+## Supported Providers
+
+- OpenAI (GPT-4, GPT-3.5, etc.)
+- Anthropic (Claude)
+- Google (Gemini)
+- OpenRouter
+- Any OpenAI-compatible API
+
+## Requirements
+
+- React 18 or 19
+- Tailwind CSS 4.x (for styling)
+
+## Development
+
+```bash
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+
+# Build library for publishing
+npm run build:lib
+```
+
+## License
+
+MIT
