@@ -2,7 +2,13 @@
 
 A React component library for comparing multiple LLM chat panels side-by-side. Compare responses from OpenAI, Anthropic, Google Gemini, and more in real-time.
 
-**[Live Demo](https://imajinx.co/tools/llm-arena)**
+<p align="center">
+  <strong><a href="https://imajinx.co/tools/llm-arena">Live Demo</a></strong>
+</p>
+
+<p align="center">
+  <img width="1440" height="788" alt="LLM Arena Screenshot" src="https://github.com/user-attachments/assets/d76bcffa-9f2a-4fd4-acad-7e7404398271" />
+</p>
 
 ## Installation
 
