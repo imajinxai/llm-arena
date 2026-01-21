@@ -75,6 +75,26 @@ function MyChat() {
 - OpenRouter
 - Any OpenAI-compatible API
 
+## Server-Side / Production Usage
+
+For production, proxy requests through your backend to keep API keys secure:
+
+1. Set `baseUrl` to your API endpoint (e.g., `/api/chat`)
+2. Your backend handles authentication and forwards to LLM providers
+3. Never expose real API keys client-side
+
+```tsx
+// Example: Configure to use your backend proxy
+import { useApiConfigStore } from 'llm-arena'
+
+useApiConfigStore.setState({
+  baseUrl: '/api/llm',  // Your backend endpoint
+  apiKey: 'session-token'  // Optional session token
+})
+```
+
+Your backend then proxies requests to the actual LLM providers with the real API keys.
+
 ## Requirements
 
 - React 18 or 19
