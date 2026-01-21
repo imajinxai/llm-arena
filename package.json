@@ -1,6 +1,6 @@
 {
   "name": "llm-arena",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A React component library for comparing multiple LLM chat panels side-by-side",
   "author": "",
   "license": "MIT",

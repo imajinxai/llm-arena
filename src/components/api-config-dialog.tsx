@@ -37,7 +37,8 @@ export function APIConfigDialog() {
           <Key className="h-4 w-4" weight="bold" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" onPointerDownOutside={(e) => e.preventDefault()}>
+        <div onMouseDown={(e) => e.stopPropagation()} onPointerDown={(e) => e.stopPropagation()}>
         <DialogHeader>
           <DialogTitle>API Configuration</DialogTitle>
           <DialogDescription>
@@ -83,6 +84,7 @@ export function APIConfigDialog() {
           <Button onClick={handleSave}>
             Save
           </Button>
+        </div>
         </div>
       </DialogContent>
     </Dialog>
