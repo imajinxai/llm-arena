@@ -19,7 +19,11 @@ import { Link, LinkBreak, DotsSix, Plus, Eraser, Sun, Moon } from '@phosphor-ico
 import { cn } from '@/lib/utils'
 import { useTheme } from '@/stores/theme'
 
-function App() {
+interface AppProps {
+  className?: string
+}
+
+function App({ className }: AppProps) {
   const [isSyncMode, setIsSyncMode] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   const dragRef = useRef<HTMLDivElement>(null)
@@ -88,7 +92,7 @@ function App() {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden bg-background">
+    <div className={cn("h-screen w-screen flex flex-col overflow-hidden bg-background", className)}>
       <div
         ref={dragRef}
         onMouseDown={handleMouseDown}
