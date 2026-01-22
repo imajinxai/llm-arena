@@ -18,7 +18,7 @@ npm install llm-arena
 
 ## Usage
 
-### Full App Component
+### Full-Screen App
 
 ```tsx
 import { LLMArena } from 'llm-arena'
@@ -26,6 +26,30 @@ import 'llm-arena/styles.css'
 
 function App() {
   return <LLMArena />
+}
+```
+
+### Embedded in a Page Section
+
+Use the `className` prop to customize dimensions when embedding in a page:
+
+```tsx
+import { LLMArena } from 'llm-arena'
+import 'llm-arena/styles.css'
+
+function MyPage() {
+  return (
+    <div>
+      <header>My App Header</header>
+      
+      <section>
+        <h2>Compare AI Models</h2>
+        <LLMArena className="h-[600px] w-full" />
+      </section>
+      
+      <footer>My App Footer</footer>
+    </div>
+  )
 }
 ```
 

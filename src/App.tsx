@@ -92,7 +92,7 @@ function App({ className }: AppProps) {
   const { theme, toggleTheme } = useTheme()
 
   return (
-    <div className={cn("h-screen w-screen flex flex-col overflow-hidden bg-background", className)}>
+    <div className={cn("flex flex-col overflow-hidden bg-background", !className && "h-screen w-screen", className)}>
       <div
         ref={dragRef}
         onMouseDown={handleMouseDown}
